@@ -16,7 +16,7 @@ const forwardingAddress = process.env.FORWARDING_ADDRESS; // Replace this with y
 const client_app_lib_path = "/app_client.js"
 var database = null;
 
-var url = process.env.DATABASE_URL;
+var url = process.env.MONGODB_URI;
 var dbConnect = mongoClient.connect(url)
 
 var bodyParser = require('body-parser');
