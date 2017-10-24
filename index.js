@@ -101,7 +101,7 @@ function updateStat(session, page, domain) {
 };
 
 app.get('/', (req, res) => {
-  res.send('hi');  
+  res.send('hi');
 });
 
 app.get('/email', (req, res) => {
@@ -115,10 +115,10 @@ app.get('/email', (req, res) => {
 });
 
 app.post('/email', (req, res) => {
-  var email = req.body.email;
-  var shop = req.body.shop;
+  var email = req.body.name_field[0];
+  var shop = req.body.name_field[1];
   dbConnect.then((db) => {
-    return db.collection("shop").updateOne({domain: shop}, {$set: {app_email: email}})
+    return db.collection("shop").updateOne({"shop.domain": shop}, {$set: {app_email: email}})
   }).then((result) => {
     res.redirect(`https://${shop}/admin/apps`);
   }).catch((error) => {
