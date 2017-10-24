@@ -105,11 +105,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/email', (req, res) => {
-  fs.readFile("view/email.html", "utf8", function(error, data){
+  fs.readFile("views/email.html", "utf8", function(error, data){
 
 		var shop = req.query.shop;
-		data = data.replace("{shop}", shop);
-		response.end(data);
+    console.log(data);
+    data = data.replace("{shop}", shop);
+		res.end(data);
 	})
 });
 
