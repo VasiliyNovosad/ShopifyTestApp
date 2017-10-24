@@ -101,7 +101,7 @@ function updateStat(session, page, domain) {
 };
 
 app.get('/', (req, res) => {
-  res.send('hi');
+  res.send('hi');  
 });
 
 app.get('/email', (req, res) => {
@@ -123,7 +123,7 @@ app.post('/email', (req, res) => {
     res.redirect(`https://${shop}/admin/apps`);
   }).catch((error) => {
     console.log(error);
-    res.render(`${forwardingAddress}/email?shop=${shop}`);
+    res.redirect(`${forwardingAddress}/email?shop=${shop}`);
   });
 });
 
@@ -249,7 +249,7 @@ app.get('/shopify/callback', (req, res) => {
       console.log(result);
       // res.status(200).end(result);
       // res.redirect(`https://${shop}/admin/apps`);
-      res.render(`${forwardingAddress}/email?shop=${shop}`);
+      res.redirect(`${forwardingAddress}/email?shop=${shop}`);
 
     })
     .catch((error) => {
