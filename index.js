@@ -97,6 +97,10 @@ function updateStat(session, page, domain) {
   });
 };
 
+app.get('/', (req, res) => {
+  res.send('hi');
+});
+
 app.post('/stat', (req, res) => {
   updateStat(req.body.session, req.body.pageName, req.body.host);
   res.send('ok');
