@@ -44,54 +44,42 @@ app.set('port', (process.env.PORT || 5000));
 
 function updateStat(session, page, domain) {
   dbConnect.then((db) => {
-    console.log('Find page:');
     return db.collection("pages").findOne({domain: domain, page: page});
   }).then((pages) => {
-    console.log(pages);
     if (pages == null) {
       return dbConnect.then((db) => {
-        console.log('Insert page');
         return db.collection("pages").insertOne({domain: domain, page: page, count: 1});
       });
     } else {
       return dbConnect.then((db) => {
-        console.log('Update page');
         return db.collection("pages").updateOne({domain: domain, page: page}, { $inc: {count: 1}});
       });
     }
   }).then((result) => {
     return dbConnect.then((db) => {
-      console.log('Find session');
       return db.collection("sessions").findOne({domain: domain, session: session});
     }); //.update({session: session}, {$inc : {count: 1}}, {safe: true});
   }).then((sessions) => {
-    console.log(sessions);
     if (sessions == null) {
       return dbConnect.then((db) => {
-        console.log('Insert session');
         return db.collection("sessions").insertOne({domain: domain, session: session, count: 1})
       }).then((result) => {
         return dbConnect.then((db) => {
-          console.log('Find uniq session');
           return db.collection("uniqSession").findOne({domain: domain});
         })
       }).then((uniqSession) => {
-          console.log(uniqSession);
           if (uniqSession == null) {
             return dbConnect.then((db) => {
-              console.log('Insert uniq session');
               return db.collection("uniqSession").insertOne({domain: domain, count: 1});
             });
           } else {
             return dbConnect.then((db) => {
-              console.log('Update uniq session');
               return db.collection("uniqSession").updateOne({domain: domain}, { $inc: {count: 1}});
             });
           };
         });
     } else {
       return dbConnect.then((db) => {
-        console.log('Update session');
         return db.collection("sessions").updateOne({domain: domain, session: session}, { $inc: {count: 1}});
       });
     }
@@ -108,7 +96,6 @@ app.get('/email', (req, res) => {
   fs.readFile("views/email.html", "utf8", function(error, data){
 
 		var shop = req.query.shop;
-    console.log(data);
     data = data.replace("{shop}", shop);
 		res.end(data);
 	})
@@ -122,7 +109,6 @@ app.post('/email', (req, res) => {
   }).then((result) => {
     res.redirect(`https://${shop}/admin/apps`);
   }).catch((error) => {
-    console.log(error);
     res.redirect(`${forwardingAddress}/email?shop=${shop}`);
   });
 });
@@ -234,10 +220,6 @@ app.get('/shopify/callback', (req, res) => {
           db.collection("shop").insertOne(shop)
         ])})
         .then((results) => {
-
-          console.log(results[0].ops);
-          console.log(results[1].ops);
-          // database.close();
           return shopResponse;
         })
         .catch((error) => {
@@ -246,15 +228,12 @@ app.get('/shopify/callback', (req, res) => {
 
     })
     .then((result) => {
-      console.log(result);
-      // res.status(200).end(result);
-      // res.redirect(`https://${shop}/admin/apps`);
       res.redirect(`${forwardingAddress}/email?shop=${shop}`);
 
     })
     .catch((error) => {
       console.log(error);
-      // res.status(error.statusCode).send(error.error.error_description);
+      res.status(error.statusCode).send(error.error.error_description);
     });
 
   } else {
