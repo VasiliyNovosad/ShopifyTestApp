@@ -8,6 +8,7 @@ const querystring = require('querystring');
 const request = require('request-promise');
 var mongoClient = require("mongodb").MongoClient;
 var objectId = require("mongodb").ObjectID;
+var fs = require("fs");
 
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
@@ -103,13 +104,35 @@ app.get('/', (req, res) => {
   res.send('hi');
 });
 
+app.get('/email', (req, res) => {
+  fs.readFile("view/email.html", "utf8", function(error, data){
+
+		var shop = req.query.shop;
+		data = data.replace("{shop}", shop);
+		response.end(data);
+	})
+});
+
+app.post('/email', (req, res) => {
+  var email = req.body.email;
+  var shop = req.body.shop;
+  dbConnect.then((db) => {
+    return db.collection("shop").updateOne({domain: shop}, {$set: {app_email: email}})
+  }).then((result) => {
+    res.redirect(`https://${shop}/admin/apps`);
+  }).catch((error) => {
+    console.log(error);
+    res.render(`${forwardingAddress}/email?shop=${shop}`);
+  });
+});
+
 app.post('/stat', (req, res) => {
   updateStat(req.body.session, req.body.pageName, req.body.host);
   res.send('ok');
 });
 
 app.get('/stat', (req, res) => {
-  dbConnect.then(function(db) {
+  dbConnect.then((db) => {
     return Promise.all([
       db.collection("uniqSession").find({}).toArray(),
       db.collection("sessions").find({}).toArray(),
@@ -224,7 +247,8 @@ app.get('/shopify/callback', (req, res) => {
     .then((result) => {
       console.log(result);
       // res.status(200).end(result);
-      res.redirect(`https://${shop}/admin/apps`);
+      // res.redirect(`https://${shop}/admin/apps`);
+      res.render(`${forwardingAddress}/email?shop=${shop}`);
 
     })
     .catch((error) => {
