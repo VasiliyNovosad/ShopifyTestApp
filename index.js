@@ -39,6 +39,8 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.set('port', (process.env.PORT || 5000));
+
 function updateStat(session, page, domain) {
   dbConnect.then((db) => {
     console.log('Find page:');
@@ -235,6 +237,6 @@ app.get('/shopify/callback', (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Example app listening on port 3000!');
+app.listen(app.get('port'), () => {
+  console.log('Example app listening on port ' + app.get('port') + '!');
 });
